@@ -2573,7 +2573,7 @@ function settingsModal(inGame){
    {label:`Language: ${S.lang==='en'?'English':S.lang==='es'?'Español':'Auto'}`,id:'sla',keep:true,fn:()=>{S.lang=S.lang===undefined||S.lang==='auto'?'en':S.lang==='en'?'es':'auto';save();I18N.setLang(S.lang);$('mb-sla').textContent=`Language: ${S.lang==='en'?'English':S.lang==='es'?'Español':'Auto'}`;}},
    FIREBASE_CONFIG&&{label:`Analytics: ${S.consent?'on':'off'}`,id:'san',keep:true,fn:()=>{setConsent(!S.consent);$('mb-san').textContent=`Analytics: ${S.consent?'on':'off'}`;}},
    inGame&&{label:'Back to map',cls:'ghost',fn:()=>exitGame()},{label:'Close',cls:'pri'}]);
-  if(inGame){ $('rotL').onclick=()=>thetaTarget-=Math.PI/2; $('rotR').onclick=()=>thetaTarget+=Math.PI/2; } }
+  if(inGame){ $('rotL').onclick=()=>{ closeModal(); thetaTarget-=Math.PI/2; tone(380,.06,'sine',.05); }; $('rotR').onclick=()=>{ closeModal(); thetaTarget+=Math.PI/2; tone(380,.06,'sine',.05); }; } }
 $('gSet').onclick=()=>settingsModal(true);
 function exitGame(){ keepState(); BS=null; $('gBoss').className=''; if(G&&L&&!winDone) track('level_quit',lvParams()); rumble(false); hideVictory(); if(G&&G.kind==='main') mapPage=pageOf(G.idx); bubble(null); $('game').classList.remove('on'); document.body.classList.remove('night'); L=null; show(G&&G.kind==='daily'?'daily':(current==='home'?'home':'map')); }
 
