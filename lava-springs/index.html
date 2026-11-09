@@ -2097,8 +2097,8 @@ function drawOneWay(x,y,z,inm,out,t){ const D=[[1,0],[0,1],[-1,0],[0,-1]], di=[0
       ctx.fillStyle='#ffd34a'; ctx.fill(); ctx.lineWidth=1.5; ctx.strokeStyle='#5a2a08'; ctx.stroke(); } }
   ctx.globalAlpha=BASEA; }
 // dibuja una imagen cuadrada encima de una casilla (cara de arriba de un bloque)
-function drawTopImg(x,y,z,img){ const T0=P(x,y,z),T1=P(x+1,y,z),T3=P(x,y+1,z), T2=[T1[0]+T3[0]-T0[0],T1[1]+T3[1]-T0[1]];
-  ctx.save(); ctx.globalAlpha=BASEA; ctx.beginPath(); ctx.moveTo(...T0); ctx.lineTo(...T1); ctx.lineTo(...T2); ctx.lineTo(...T3); ctx.closePath(); ctx.clip();
+function drawTopImg(x,y,z,img,alpha=1){ const T0=P(x,y,z),T1=P(x+1,y,z),T3=P(x,y+1,z), T2=[T1[0]+T3[0]-T0[0],T1[1]+T3[1]-T0[1]];
+  ctx.save(); ctx.globalAlpha=BASEA*alpha; ctx.beginPath(); ctx.moveTo(...T0); ctx.lineTo(...T1); ctx.lineTo(...T2); ctx.lineTo(...T3); ctx.closePath(); ctx.clip();
   ctx.transform(T1[0]-T0[0],T1[1]-T0[1],T3[0]-T0[0],T3[1]-T0[1],T0[0],T0[1]); ctx.drawImage(img,0,0,img.naturalWidth,img.naturalHeight,-.01,-.01,1.02,1.02); ctx.restore();
   if(PAL===PAL_NIGHT) poly(ctx,[T0,T1,T2,T3],'rgba(10,6,30,.3)'); }
 // acueducto: losa de piedra fija sostenida por columnas (deja ver que es una pieza fija que ayuda)
@@ -2360,7 +2360,7 @@ function drawGame(t){
     cells.forEach((c,i)=>{ if(c.h===0){const x=i%W,y=(i/W)|0,s=.14;
       poly(ctx,[P(x+s,y+s,0),P(x+1-s,y+s,0),P(x+1-s,y+1-s,0),P(x+s,y+1-s,0)],`rgba(255,255,255,${i===hover?.5:pulse*.35})`,`rgba(255,255,255,${i===hover?.9:.5})`,1.5);}}); }
   if(dragIdx>=0){ const c=cells[dragIdx];
-    if(hover>=0){ const ph=c.under?c.h-c.under.h:c.h, base=cells[hover].h>0&&hover!==dragIdx?cells[hover].h:0; drawBlock(hover%W,(hover/W)|0,ph,c.ch!==undefined?'woodc':'wood',.1+base,.85,c.seed); if(c.ch!==undefined) drawChanTop(hover%W,(hover/W)|0,base+ph+.1,c.ch,c.seed); } else drawBlock(dragIdx%W,(dragIdx/W)|0,c.h,'wood',0,.3,c.seed);
+    if(hover>=0){ const ph=c.under?c.h-c.under.h:c.h, base=cells[hover].h>0&&hover!==dragIdx?cells[hover].h:0; drawBlock(hover%W,(hover/W)|0,ph,c.ch!==undefined?'woodc':'wood',.1+base,.85,c.seed); if(c.ch!==undefined){ if(CHANIMG[c.ch]&&CHANIMG[c.ch].naturalWidth) drawTopImg(hover%W,(hover/W)|0,base+ph+.1,CHANIMG[c.ch],.85); else drawChanTop(hover%W,(hover/W)|0,base+ph+.1,c.ch,c.seed); } if(c.out!==undefined) drawOneWay(hover%W,(hover/W)|0,base+ph+.1,c.inm,c.out,t); } else drawBlock(dragIdx%W,(dragIdx/W)|0,c.h,'wood',0,.3,c.seed);
   }
   for(const f of INARR) f(); INARR=[];
   if(flowUntil>t) drawEye(t);
